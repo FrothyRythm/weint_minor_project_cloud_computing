@@ -4,7 +4,8 @@ const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 const { v4: uuidv4 } = require('uuid');
 const s3Client = require('../config/aws');
 const db = require('../config/db');
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '../.env') });
 
 const BUCKET = process.env.S3_BUCKET_NAME || '';
 
