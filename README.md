@@ -4,7 +4,8 @@
 CloudVault is a secure, lightweight, and responsive cloud storage solution that lets users manage files, preview media, and create temporary expirable sharing links.
 
 ### Live Production Deployment
-👉 Access CloudVault at: **[https://cloudvault-7xmz.onrender.com](https://cloudvault-7xmz.onrender.com)**
+* **EC2 Public Host**: **[http://52.66.248.128](http://52.66.248.128)** *(Recommended: runs 24/7 on AWS Free Tier with persistent SQLite database storage)*
+* **Render Web Host**: **[https://cloudvault-7xmz.onrender.com](https://cloudvault-7xmz.onrender.com)** *(Container auto-deploy on git push)*
 
 ---
 
