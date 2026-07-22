@@ -437,7 +437,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     progressBar.style.width = '100%';
     setTimeout(() => { progressContainer.style.display = 'none'; }, 1000);
-    showAlert(`Successfully uploaded ${uploadedCount} file(s)`, true);
+    if (uploadedCount > 0) {
+      showAlert(`Successfully uploaded ${uploadedCount} file(s)`, true);
+    }
     loadDashboard();
   }
 
