@@ -28,6 +28,7 @@ exports.getUploadUrl = async (req, res) => {
       const uploadUrl = await getSignedUrl(s3Client, command, { expiresIn: 3600 });
       res.json({ uploadUrl, s3Key });
     } catch (s3Err) {
+      console.error('S3 pre-signing error:', s3Err);
       res.status(500).json({ error: 'Failed to generate upload URL' });
     }
   });
@@ -56,6 +57,7 @@ exports.getDownloadUrl = (req, res) => {
       const downloadUrl = await getSignedUrl(s3Client, command, { expiresIn: 3600 });
       res.json({ downloadUrl, filename: file.filename });
     } catch (s3Err) {
+      console.error('S3 download-url error:', s3Err);
       res.status(500).json({ error: 'Failed to generate download URL' });
     }
   });
@@ -74,6 +76,7 @@ exports.deleteFile = (req, res) => {
         res.json({ message: 'File deleted successfully' });
       });
     } catch (s3Err) {
+      console.error('S3 delete-file error:', s3Err);
       res.status(500).json({ error: 'Failed to delete file from S3' });
     }
   });
