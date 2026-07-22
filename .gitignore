@@ -1,7 +1,6 @@
 # Git ignore configuration for Node modules, local databases, and secrets
 node_modules/
 backend/node_modules/
-.env
 backend/.env
 *.db
 *.db-journal
