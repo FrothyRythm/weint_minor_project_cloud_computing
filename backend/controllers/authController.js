@@ -34,3 +34,25 @@ exports.logout = (req, res) => {
   res.clearCookie('token');
   res.json({ message: 'Logged out successfully' });
 };
+
+exports.changePassword = (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+  if (!currentPassword || !newPassword) return res.status(400).json({ error: 'All fields are required' });
+  db.get('SELECT * FROM users WHERE id = ?', [req.user.id], (err, user) => {
+    if (err || !user) return res.status(400).json({ error: 'User not found' });
+    bcrypt.compare(currentPassword, user.password, (cmpErr, isMatch) => {
+      if (cmpErr || !isMatch) return res.status(400).json({ error: 'Invalid current password' });
+      bcrypt.hash(newPassword, 10, (hashErr, hash) => {
+        if (hashErr) return res.status(500).json({ error: 'Error hashing password' });
+        db.run('UPDATE users SET password = ? WHERE id = ?', [hash, req.user.id], (updErr) => {
+          if (updErr) return res.status(500).json({ error: 'Failed to update password' });
+          res.json({ message: 'Password updated successfully' });
+        });
+      });
+    });
+  });
+};
+
+exports.getMe = (req, res) => {
+  res.json({ user: { id: req.user.id, username: req.user.username } });
+};

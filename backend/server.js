@@ -4,6 +4,7 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 require('dotenv').config();
 
+const path = require('path');
 const authRoutes = require('./routes/auth');
 const fileRoutes = require('./routes/files');
 const shareRoutes = require('./routes/share');
@@ -19,6 +20,11 @@ app.use(cookieParser());
 app.use('/api/auth', authRoutes);
 app.use('/api/files', fileRoutes);
 app.use('/api/shares', shareRoutes);
+
+app.use(express.static(path.join(__dirname, '../frontend')));
+app.get('/', (req, res) => {
+  res.redirect('/public/index.html');
+});
 
 app.use((err, req, res, next) => {
   console.error(err.stack);

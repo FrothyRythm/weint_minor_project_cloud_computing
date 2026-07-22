@@ -42,3 +42,29 @@ exports.resolveShare = (req, res) => {
     }
   );
 };
+
+exports.listShares = (req, res) => {
+  db.all(
+    'SELECT shares.*, files.filename, files.file_size FROM shares JOIN files ON shares.file_id = files.id WHERE files.user_id = ? ORDER BY shares.expires_at DESC',
+    [req.user.id],
+    (err, rows) => {
+      if (err) return res.status(500).json({ error: 'Database query failed' });
+      res.json(rows);
+    }
+  );
+};
+
+exports.revokeShare = (req, res) => {
+  const token = req.params.token;
+  db.get(
+    'SELECT shares.id FROM shares JOIN files ON shares.file_id = files.id WHERE shares.id = ? AND files.user_id = ?',
+    [token, req.user.id],
+    (err, row) => {
+      if (err || !row) return res.status(404).json({ error: 'Share link not found' });
+      db.run('DELETE FROM shares WHERE id = ?', [token], (delErr) => {
+        if (delErr) return res.status(500).json({ error: 'Failed to revoke share link' });
+        res.json({ message: 'Share link revoked successfully' });
+      });
+    }
+  );
+};
