@@ -1,0 +1,9 @@
+{
+  "name": "cloudvault-root",
+  "version": "1.0.0",
+  "description": "Root package manager for CloudVault deployment",
+  "scripts": {
+    "build": "cd backend && npm install",
+    "start": "cd backend && node server.js"
+  }
+}

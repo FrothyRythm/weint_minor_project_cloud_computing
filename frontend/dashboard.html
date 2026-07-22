@@ -1,55 +1,138 @@
-<!-- User dashboard for managing storage quota, uploads, downloads, and sharing -->
+<!-- Dashboard layout with sidebar navigation, search queries, and vault branding -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cloud Vault - Dashboard</title>
+  <title>CloudVault - Dashboard</title>
   <link rel="stylesheet" href="public/css/styles.css">
 </head>
-<body>
-  <div class="dashboard-container">
-    <div class="header">
+<body style="display: block;">
+  <div class="dashboard-layout">
+    <div class="sidebar">
       <div>
-        <h2>Storage Space</h2>
-        <p class="quota-indicator" id="quota-text">Usage: Calculating...</p>
+        <div class="logo-container" style="align-items: flex-start; margin-bottom: 2.5rem; flex-direction: row;">
+          <svg class="logo-svg" viewBox="0 0 100 100" width="38" height="38" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="50" cy="50" r="42" stroke-width="6"/>
+            <circle cx="50" cy="50" r="32" stroke-dasharray="6 4" stroke-width="2"/>
+            <rect x="14" y="44" width="8" height="12" rx="2" fill="currentColor"/>
+            <circle cx="50" cy="50" r="22" stroke-width="3"/>
+            <line x1="50" y1="8" x2="50" y2="28" stroke-width="4"/>
+            <line x1="50" y1="72" x2="50" y2="92" stroke-width="4"/>
+            <line x1="8" y1="50" x2="28" y2="50" stroke-width="4"/>
+            <line x1="72" y1="50" x2="92" y2="50" stroke-width="4"/>
+            <circle cx="50" cy="44" r="5" fill="currentColor"/>
+            <circle cx="44" cy="54" r="5" fill="currentColor"/>
+            <circle cx="56" cy="54" r="5" fill="currentColor"/>
+          </svg>
+          <h1 style="font-size: 1.5rem; font-weight: 700; color: var(--accent-color); margin-bottom: 0; align-self: center;">CloudVault</h1>
+        </div>
+        <ul class="nav-links">
+          <li class="nav-item active" id="nav-files">
+            <span>Files</span>
+          </li>
+          <li class="nav-item" id="nav-shares">
+            <span>Shared Links</span>
+          </li>
+          <li class="nav-item" id="nav-settings">
+            <span>Settings</span>
+          </li>
+        </ul>
       </div>
-      <button id="logout-btn" class="btn-secondary" style="width: auto;">Logout</button>
+
+      <div class="storage-widget">
+        <h4 style="font-size: 0.9rem; font-weight: 500; margin-bottom: 0.25rem;">Storage space</h4>
+        <div class="storage-bar-bg">
+          <div class="storage-bar-fill" id="storage-bar-fill"></div>
+        </div>
+        <p class="quota-indicator" id="quota-text" style="font-size: 0.8rem;">Usage: Calculating...</p>
+      </div>
     </div>
 
-    <div class="upload-section" id="drop-zone">
-      <h3>Drag & Drop Files Here</h3>
-      <p>Or click to select files from your computer</p>
-      <input type="file" id="file-input" style="display: none;">
-      <div class="progress-bar-container" id="progress-container">
-        <div class="progress-bar" id="progress-bar"></div>
+    <div class="main-content">
+      <div class="top-bar">
+        <h2 id="welcome-text" style="margin-bottom: 0; font-size: 1.75rem;">Welcome back!</h2>
+        <button id="logout-btn" class="btn-secondary" style="width: auto; margin-top: 0; padding: 0.5rem 1.25rem;">Logout</button>
       </div>
-    </div>
+      <div id="dashboard-alert" class="alert"></div>
 
-    <div id="dashboard-alert" class="alert"></div>
+      <div id="view-files-container">
+        <div class="upload-zone" id="drop-zone">
+          <h3>Drag & Drop Files</h3>
+          <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.25rem;">Or click to select files from your computer</p>
+          <input type="file" id="file-input" style="display: none;" multiple>
+          <div class="progress-bar-container" id="progress-container">
+            <div class="progress-bar" id="progress-bar"></div>
+          </div>
+        </div>
 
-    <h3 style="margin-top: 2rem;">Your Files</h3>
-    <div class="file-grid" id="file-list">
-      <!-- File cards will be injected dynamically -->
+        <div class="search-filter-bar">
+          <input type="text" id="search-input" class="search-input" placeholder="Search files by name...">
+          <button class="filter-btn active" data-filter="all">All</button>
+          <button class="filter-btn" data-filter="pdf">PDFs</button>
+          <button class="filter-btn" data-filter="image">Images</button>
+          <button class="filter-btn" data-filter="media">Media</button>
+          <button class="filter-btn" data-filter="other">Others</button>
+        </div>
+
+        <h3 style="margin-bottom: 1rem; font-size: 1.25rem; font-weight: 500;">Your Vault Contents</h3>
+        <div class="file-grid" id="file-list">
+          <!-- Files grid -->
+        </div>
+      </div>
+
+      <div id="view-shares-container" style="display: none;">
+        <h3 style="margin-bottom: 1.5rem; font-size: 1.25rem; font-weight: 500;">Active Secure Share Links</h3>
+        <div class="file-grid" id="share-list">
+          <!-- Active shares will be loaded here -->
+        </div>
+      </div>
+
+      <div id="view-settings-container" style="display: none; max-width: 440px; margin-top: 1rem;">
+        <h3 style="margin-bottom: 1.5rem; font-size: 1.25rem; font-weight: 500;">Update Security Credentials</h3>
+        <form id="change-password-form">
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label for="current-password">Current Password</label>
+            <input type="password" id="current-password" required>
+          </div>
+          <div class="form-group" style="margin-bottom: 1.5rem;">
+            <label for="new-password">New Password</label>
+            <input type="password" id="new-password" required>
+          </div>
+          <button type="submit">Update Password</button>
+        </form>
+      </div>
     </div>
   </div>
 
   <div class="modal" id="share-modal">
     <div class="modal-content">
-      <h3>Share File</h3>
+      <h3 style="margin-bottom: 1.25rem;">Share Secure Link</h3>
       <div class="form-group">
-        <label for="share-expiry">Link Expiry (Minutes)</label>
+        <label for="share-expiry">Link Expiration (Minutes)</label>
         <input type="number" id="share-expiry" value="60" min="1" required>
       </div>
-      <button id="generate-link-btn">Generate Link</button>
-      <div id="share-result" style="margin-top: 1rem; display: none;">
-        <input type="text" id="share-url" readonly style="margin-bottom: 0.5rem;">
+      <button id="generate-link-btn" style="margin-top: 1rem;">Generate Link</button>
+      <div id="share-result" style="margin-top: 1.25rem; display: none;">
+        <input type="text" id="share-url" readonly style="margin-bottom: 0.75rem;">
         <button id="copy-link-btn" class="btn-success">Copy Link</button>
       </div>
-      <button id="close-modal-btn" class="btn-secondary">Close</button>
+      <button id="close-modal-btn" class="btn-secondary" style="margin-top: 0.75rem;">Cancel</button>
     </div>
   </div>
 
+  <div class="modal" id="preview-modal">
+    <div class="modal-content" style="max-width: 700px; width: 90%; height: 80%; display: flex; flex-direction: column;">
+      <h3 id="preview-title" style="margin-bottom: 1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">File Preview</h3>
+      <div id="preview-body" style="flex: 1; overflow: auto; background: var(--input-bg); border-radius: 10px; padding: 1rem; display: flex; justify-content: center; align-items: center;">
+        <!-- Preview frame -->
+      </div>
+      <button id="close-preview-btn" class="btn-secondary" style="margin-top: 1rem; width: auto; align-self: flex-end;">Close</button>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="public/js/api.js"></script>
   <script src="public/js/dashboard.js"></script>
 </body>
