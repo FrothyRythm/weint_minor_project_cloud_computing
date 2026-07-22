@@ -162,7 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
     shares.forEach(share => {
       const card = document.createElement('div');
       card.className = 'file-card';
-      const shareUrl = `http://localhost:3000/api/shares/${share.id}`;
+      const shareUrl = `${window.location.origin}/api/shares/${share.id}`;
       card.innerHTML = `
         <div class="file-info">
           <div class="file-title">${share.filename}</div>
@@ -323,7 +323,7 @@ document.addEventListener('DOMContentLoaded', () => {
         method: 'POST',
         body: JSON.stringify({ fileId: activeShareFileId, expiresInMinutes: mins })
       });
-      const publicUrl = `http://localhost:3000/api/shares/${data.shareToken}`;
+      const publicUrl = `${window.location.origin}/api/shares/${data.shareToken}`;
       shareUrlInput.value = publicUrl;
       shareResult.style.display = 'block';
     } catch (err) {
